@@ -129,9 +129,9 @@ class _AeroButtonGroupState extends State<AeroButtonGroup> {
   Color _getTextColor(int index) {
     final theme = Theme.of(context);
     if (_selectedStates[index]) {
-      return widget.selectedTextColor ?? Colors.white;
+      return widget.selectedTextColor ?? theme.colorScheme.secondary;
     }
-    return widget.textColor ?? theme.colorScheme.onSurface;
+    return widget.textColor ?? theme.colorScheme.primary;
   }
 
   BorderRadius _getBorderRadius(int index) {

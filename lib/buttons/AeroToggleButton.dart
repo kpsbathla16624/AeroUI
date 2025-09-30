@@ -197,7 +197,7 @@ class _AeroToggleButtonState extends State<AeroToggleButton>
   }
 
   Color _getActiveColor(BuildContext context) {
-    return widget.activeColor ?? Theme.of(context).colorScheme.primary;
+    return widget.activeColor ?? Colors.green;
   }
 
   Color _getInactiveColor(BuildContext context) {

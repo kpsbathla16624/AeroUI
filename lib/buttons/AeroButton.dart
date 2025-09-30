@@ -421,11 +421,11 @@ class _AeroButtonState extends State<AeroButton> with SingleTickerProviderStateM
     switch (config.variant) {
       case AeroButtonVariant.solid:
       case AeroButtonVariant.gradient:
-        return Colors.white;
+        return config.textColor ?? theme.colorScheme.secondary;
       case AeroButtonVariant.outline:
       case AeroButtonVariant.ghost:
       case AeroButtonVariant.link:
-        return config.color ?? theme.colorScheme.primary;
+        return config.textColor ?? theme.colorScheme.primary;
     }
   }
 
