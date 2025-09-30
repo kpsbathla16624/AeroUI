@@ -188,6 +188,10 @@ class ModernSidebar extends StatefulWidget {
   final Widget? toggleButton;
   final bool showToggleButton;
 
+  // show border on items 
+  final bool showItemBorder;
+  final bool showItemIconsOnExpanded;
+
   const ModernSidebar({
     Key? key,
     required this.items,
@@ -204,6 +208,8 @@ class ModernSidebar extends StatefulWidget {
     this.breakpoint = 768.0,
     this.toggleButton,
     this.showToggleButton = true,
+    this.showItemBorder = false,
+    this.showItemIconsOnExpanded = true,
   }) : super(key: key);
 
   @override
@@ -408,9 +414,9 @@ class _ModernSidebarState extends State<ModernSidebar>
                   ? widget.config.hoverColor.withOpacity(0.5)
                   : Colors.transparent,
           borderRadius: BorderRadius.circular(widget.config.borderRadius),
-          border: isActive
+          border: widget.showItemBorder ? ( isActive
               ? Border.all(color: widget.config.activeColor.withOpacity(0.3))
-              : null,
+              : null ): null,
         ),
         child: Material(
           color: Colors.transparent,
@@ -427,8 +433,8 @@ class _ModernSidebarState extends State<ModernSidebar>
               }
             },
             child: Container(
-              constraints: const BoxConstraints(minHeight: 48),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              constraints: const BoxConstraints(minHeight: 40),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: _controller.isCollapsed
                   ? _buildCollapsedItem(item, isActive)
                   : _buildExpandedItem(item, isActive, isExpanded),
@@ -493,12 +499,14 @@ class _ModernSidebarState extends State<ModernSidebar>
   Widget _buildExpandedItem(SidebarItem item, bool isActive, bool isExpanded) {
     return Row(
       children: [
-        Icon(
-          item.icon,
-          color: isActive ? widget.config.activeColor : widget.config.iconColor,
-          size: 20,
-        ),
-        const SizedBox(width: 12),
+        if (widget.showItemIconsOnExpanded ) ...[
+          Icon(
+            item.icon,
+            color: isActive ? widget.config.activeColor : widget.config.iconColor,
+            size: 20,
+          ),
+          const SizedBox(width: 12),
+        ],
         Expanded(
           child: Text(
             item.title,
@@ -734,12 +742,12 @@ class _ModernSidebarState extends State<ModernSidebar>
 /// Predefined sidebar themes
 class SidebarThemes {
   static const SidebarConfig darkTheme = SidebarConfig(
-    backgroundColor: Color(0xFF1A1A1A),
+    backgroundColor:  Colors.black,
     surfaceColor: Color(0xFF2D2D2D),
     primaryColor: Color(0xFF3B82F6),
     textColor: Color(0xFFFFFFFF),
     iconColor: Color(0xFFBBBBBB),
-    dividerColor: Color(0xFF404040),
+    dividerColor: Color.fromARGB(255, 34, 34, 34),
     hoverColor: Color(0xFF404040),
     activeColor: Color(0xFF3B82F6),
   );
