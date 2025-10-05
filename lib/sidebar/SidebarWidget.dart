@@ -49,7 +49,6 @@ enum SidebarBehavior {
   adaptive,  // Changes based on screen size
 }
 
-/// Sidebar configuration
 class SidebarConfig {
   final double expandedWidth;
   final double collapsedWidth;
@@ -86,8 +85,46 @@ class SidebarConfig {
     this.minWidth = 60.0,
     this.maxWidth = 400.0,
   });
-}
 
+  // Add this copyWith method
+  SidebarConfig copyWith({
+    double? expandedWidth,
+    double? collapsedWidth,
+    Color? backgroundColor,
+    Color? surfaceColor,
+    Color? primaryColor,
+    Color? textColor,
+    Color? iconColor,
+    Color? dividerColor,
+    Color? hoverColor,
+    Color? activeColor,
+    double? borderRadius,
+    Duration? animationDuration,
+    bool? showShadow,
+    bool? enableResize,
+    double? minWidth,
+    double? maxWidth,
+  }) {
+    return SidebarConfig(
+      expandedWidth: expandedWidth ?? this.expandedWidth,
+      collapsedWidth: collapsedWidth ?? this.collapsedWidth,
+      backgroundColor: backgroundColor ?? this.backgroundColor,
+      surfaceColor: surfaceColor ?? this.surfaceColor,
+      primaryColor: primaryColor ?? this.primaryColor,
+      textColor: textColor ?? this.textColor,
+      iconColor: iconColor ?? this.iconColor,
+      dividerColor: dividerColor ?? this.dividerColor,
+      hoverColor: hoverColor ?? this.hoverColor,
+      activeColor: activeColor ?? this.activeColor,
+      borderRadius: borderRadius ?? this.borderRadius,
+      animationDuration: animationDuration ?? this.animationDuration,
+      showShadow: showShadow ?? this.showShadow,
+      enableResize: enableResize ?? this.enableResize,
+      minWidth: minWidth ?? this.minWidth,
+      maxWidth: maxWidth ?? this.maxWidth,
+    );
+  }
+}
 /// Modern animated sidebar controller
 class SidebarController extends ChangeNotifier {
   SidebarMode _mode = SidebarMode.expanded;
@@ -184,6 +221,7 @@ class ModernSidebar extends StatefulWidget {
   final Function(SidebarMode)? onModeChanged;
   final Function(double)? onWidthChanged;
   final double breakpoint;
+  final bool autoCollapse;
   // custom toggle button
   final Widget? toggleButton;
   final bool showToggleButton;
@@ -210,6 +248,7 @@ class ModernSidebar extends StatefulWidget {
     this.showToggleButton = true,
     this.showItemBorder = false,
     this.showItemIconsOnExpanded = true,
+    this.autoCollapse = true,
   }) : super(key: key);
 
   @override
@@ -707,7 +746,7 @@ class _ModernSidebarState extends State<ModernSidebar>
 
   WidgetsBinding.instance.addPostFrameCallback((_) {
     if (!mounted) return;
-
+    if (!widget.autoCollapse) return;
     // Only trigger collapse/expand if width crosses breakpoint AND width actually changed
     if (_lastWidth != screenWidth) {
       _lastWidth = screenWidth;
@@ -750,6 +789,7 @@ class SidebarThemes {
     dividerColor: Color.fromARGB(255, 34, 34, 34),
     hoverColor: Color(0xFF404040),
     activeColor: Color(0xFF3B82F6),
+
   );
 
   static const SidebarConfig lightTheme = SidebarConfig(
@@ -774,6 +814,8 @@ class SidebarThemes {
     activeColor: Color(0xFF00D4AA),
     borderRadius: 16.0,
   );
+
+
 }
 
 /// Helper class for creating common sidebar items
