@@ -3,7 +3,6 @@
 A comprehensive Flutter UI component library for building beautiful and consistent applications with ease.
 
 [![pub package](https://img.shields.io/pub/v/aero_ui.svg)](https://pub.dev/packages/aero_ui)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ## 🚀 Features
 
@@ -83,9 +82,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 👨‍💻 Author
 
