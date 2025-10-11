@@ -7,7 +7,7 @@ enum CardAnimation { fadeIn, slideUp, scale, none }
 enum BadgePosition { topLeft, topRight, bottomLeft, bottomRight }
 
 // Badge Model
-class AeroBadge {
+class AeroCardBadge {
   final String text;
   final BadgePosition position;
   final Color backgroundColor;
@@ -15,7 +15,7 @@ class AeroBadge {
   final double? size;
   final Widget? customBadge;
 
-  const AeroBadge({
+  const AeroCardBadge({
     required this.text,
     this.position = BadgePosition.topRight,
     this.backgroundColor = Colors.red,
@@ -64,7 +64,7 @@ class AeroCard extends StatefulWidget {
   final Curve curve;
 
   // Overlay / Badge
-  final AeroBadge? badge;
+  final AeroCardBadge? badge;
 
   // Interaction
   final bool enableRipple;

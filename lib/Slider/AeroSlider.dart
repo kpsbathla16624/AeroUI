@@ -1,3 +1,5 @@
+
+import 'package:aero_ui/Slider/AeroRangeSlector.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
@@ -8,20 +10,8 @@ enum SliderVariant {
   glass,
 }
 
-/// Enum for thumb shapes
-enum ThumbShape {
-  circle,
-  square,
-  diamond,
-  custom,
-}
 
-/// Enum for tick mark shapes
-enum TickMarkShape {
-  line,
-  circle,
-  square,
-}
+
 
 /// Custom slider widget with modern features
 class AeroSlider extends StatefulWidget {
@@ -46,7 +36,7 @@ class AeroSlider extends StatefulWidget {
   final Color? inactiveColor;
   final Color? thumbColor;
   final double trackHeight;
-  final ThumbShape thumbShape;
+  final ThumbShape  thumbShape;
   final TickMarkShape tickMarkShape;
 
   // Advanced
