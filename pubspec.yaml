@@ -3,7 +3,7 @@ description: >
   AeroUI — A modern Flutter UI component library featuring glass, gradient, and solid design styles. 
   Includes buttons, text fields, loaders, dropdowns, and more.
 
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/kpsbathla16624/AeroUI
 repository: https://github.com/kpsbathla16624/AeroUI
 issue_tracker: https://github.com/kpsbathla16624/AeroUI/issues
