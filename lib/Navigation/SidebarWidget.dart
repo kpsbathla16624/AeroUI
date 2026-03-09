@@ -2,23 +2,40 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 /// Sidebar menu item model
+enum SidebarItemType {
+  item,
+  header,
+}
+
 class SidebarItem {
   final String id;
   final String title;
-  final IconData icon;
+  final IconData? icon;
+
+  final SidebarItemType type;
+
   final String? route;
   final VoidCallback? onTap;
   final bool isActive;
   final bool isVisible;
+
   final int? badgeCount;
   final Color? badgeColor;
+
   final List<SidebarItem>? children;
   final String? tooltip;
+
+  // IS EXANDED BY DEFAULT IF IT HAS CHILDREN
+  final bool initiallyExpanded;
+
+  final bool reorderable;
+final Function(int oldIndex, int newIndex)? onReorder;
 
   const SidebarItem({
     required this.id,
     required this.title,
-    required this.icon,
+    this.icon,
+    this.type = SidebarItemType.item,
     this.route,
     this.onTap,
     this.isActive = false,
@@ -26,11 +43,23 @@ class SidebarItem {
     this.badgeCount,
     this.badgeColor,
     this.children,
-    this.tooltip,
+    this.tooltip,  this.reorderable = false,
+  this.onReorder,
+    this.initiallyExpanded = false,
   });
 
   bool get hasChildren => children != null && children!.isNotEmpty;
+  bool get isHeader => type == SidebarItemType.header;
+
+  static SidebarItem header(String title) {
+  return SidebarItem(
+    id: title,
+    title: title,
+    type: SidebarItemType.header,
+  );
 }
+}
+
 
 /// Sidebar display modes
 enum SidebarMode {
@@ -272,6 +301,8 @@ class _ModernSidebarState extends State<ModernSidebar>
   void initState() {
     super.initState();
     _controller = widget.controller ?? SidebarController();
+
+_initializeInitiallyExpanded(widget.items);
     _searchController = TextEditingController();
 
     _animationController = AnimationController(
@@ -301,6 +332,19 @@ class _ModernSidebarState extends State<ModernSidebar>
     }
    
   }
+
+  void _initializeInitiallyExpanded(List<SidebarItem> items) {
+  for (final item in items) {
+
+    if (item.initiallyExpanded) {
+      _controller.expandedItems.add(item.id);
+    }
+
+    if (item.hasChildren) {
+      _initializeInitiallyExpanded(item.children!);
+    }
+  }
+}
 
   @override
   void dispose() {
@@ -433,6 +477,21 @@ class _ModernSidebarState extends State<ModernSidebar>
   Widget _buildMenuItem(SidebarItem item, {int level = 0}) {
     if (!item.isVisible) return const SizedBox.shrink();
 
+    if (item.isHeader ) {
+  return Padding(
+    padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
+    child: Text(
+      item.title.toUpperCase(),
+      style: TextStyle(
+        color: widget.config.iconColor.withOpacity(0.6),
+        fontSize: 11,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 1.2,
+      ),
+    ),
+  );
+}
+
     final isExpanded = _controller.expandedItems.contains(item.id);
     final isActive = _controller.activeItemId == item.id || item.isActive;
     final isHovered = _hoveredItemId == item.id;
@@ -493,11 +552,43 @@ class _ModernSidebarState extends State<ModernSidebar>
     return Column(
       children: [
         content,
-        if (item.hasChildren && isExpanded && !_controller.isCollapsed)
-          ...item.children!.map((child) => _buildMenuItem(child, level: level + 1)),
+       if (item.hasChildren && isExpanded && !_controller.isCollapsed)
+  if (item.reorderable)
+    _buildReorderableChildren(item, level)
+  else
+    ...item.children!.map(
+      (child) => _buildMenuItem(child, level: level + 1),
+    ),
       ],
     );
   }
+Widget _buildReorderableChildren(SidebarItem parent, int level) {
+  final children = parent.children!;
+
+  return ReorderableListView(
+    shrinkWrap: true,
+    physics: const NeverScrollableScrollPhysics(),
+
+    onReorder: (oldIndex, newIndex) {
+
+      /// Fix Flutter's index behavior internally
+      if (newIndex > oldIndex) {
+        newIndex--;
+      }
+
+      parent.onReorder?.call(oldIndex, newIndex);
+    },
+
+     children: List.generate(children.length, (index) {
+      final child = children[index];
+
+      return Container(
+        key: ValueKey(child.id),   // VERY IMPORTANT
+        child: _buildMenuItem(child, level: level + 1),
+      );
+    }),
+  );
+}
 
   Widget _buildCollapsedItem(SidebarItem item, bool isActive) {
     return Stack(

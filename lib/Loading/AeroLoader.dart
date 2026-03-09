@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'dart:ui' show ImageFilter;
+import 'package:vector_math/vector_math_64.dart' show Matrix4;
 
 enum LoaderType {
   spinner,
