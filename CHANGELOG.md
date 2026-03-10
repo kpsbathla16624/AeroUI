@@ -11,3 +11,7 @@
 - reorderable sidebar items
 - sidebar headers
 - initiallyExpanded support
+
+
+## 0.0.3
+  fixed drag handle in sidebar item 

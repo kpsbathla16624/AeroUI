@@ -474,7 +474,7 @@ _initializeInitiallyExpanded(widget.items);
     );
   }
 
-  Widget _buildMenuItem(SidebarItem item, {int level = 0}) {
+Widget _buildMenuItem(SidebarItem item, {int level = 0, int? index , bool isReorderable = false}){
     if (!item.isVisible) return const SizedBox.shrink();
 
     if (item.isHeader ) {
@@ -535,7 +535,7 @@ _initializeInitiallyExpanded(widget.items);
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: _controller.isCollapsed
                   ? _buildCollapsedItem(item, isActive)
-                  : _buildExpandedItem(item, isActive, isExpanded),
+                  : _buildExpandedItem(item, isActive, isExpanded , index: index, isReorderable: isReorderable),
             ),
           ),
         ),
@@ -557,7 +557,7 @@ _initializeInitiallyExpanded(widget.items);
     _buildReorderableChildren(item, level)
   else
     ...item.children!.map(
-      (child) => _buildMenuItem(child, level: level + 1),
+      (child) => _buildMenuItem(child, level: level + 1, isReorderable: child.reorderable),
     ),
       ],
     );
@@ -568,7 +568,7 @@ Widget _buildReorderableChildren(SidebarItem parent, int level) {
   return ReorderableListView(
     shrinkWrap: true,
     physics: const NeverScrollableScrollPhysics(),
-
+ buildDefaultDragHandles: false, 
     onReorder: (oldIndex, newIndex) {
 
       /// Fix Flutter's index behavior internally
@@ -584,7 +584,7 @@ Widget _buildReorderableChildren(SidebarItem parent, int level) {
 
       return Container(
         key: ValueKey(child.id),   // VERY IMPORTANT
-        child: _buildMenuItem(child, level: level + 1),
+        child: _buildMenuItem(child, level: level + 1 , index: index , isReorderable: true),
       );
     }),
   );
@@ -626,17 +626,28 @@ Widget _buildReorderableChildren(SidebarItem parent, int level) {
     );
   }
 
-  Widget _buildExpandedItem(SidebarItem item, bool isActive, bool isExpanded) {
+  Widget _buildExpandedItem(SidebarItem item,  bool isActive, bool isExpanded , {int? index , bool isReorderable = false}) {
     return Row(
       children: [
-        if (widget.showItemIconsOnExpanded ) ...[
-          Icon(
-            item.icon,
-            color: isActive ? widget.config.activeColor : widget.config.iconColor,
+      if (widget.showItemIconsOnExpanded) ...[
+  isReorderable && index != null
+      ? ReorderableDragStartListener(
+          index: index,
+          child: Icon(
+            Icons.drag_indicator,
+            color: widget.config.iconColor,
             size: 20,
           ),
-          const SizedBox(width: 12),
-        ],
+        )
+      : Icon(
+          item.icon,
+          color: isActive
+              ? widget.config.activeColor
+              : widget.config.iconColor,
+          size: 20,
+        ),
+  const SizedBox(width: 12),
+],
         Expanded(
           child: Text(
             item.title,
